@@ -2,23 +2,9 @@ import Contacts
 import Foundation
 
 struct AppDependencies {
-    let permissionService: ContactsPermissionServiceProtocol
-    let fetchingService: ContactsFetchingServiceProtocol
-    let favoritesStorageService: FavoritesStorageServiceProtocol
-
-    init(
-        permissionService: ContactsPermissionServiceProtocol = ContactsPermissionService(
-            dependencies: .init(contactStore: CNContactStore())
-        ),
-        fetchingService: ContactsFetchingServiceProtocol = ContactsFetchingService(
-            dependencies: .init(contactStore: CNContactStore(), sortOrder: .userDefault)
-        ),
-        favoritesStorageService: FavoritesStorageServiceProtocol = FavoritesStorageService(
-            dependencies: .init(userDefaults: .standard)
-        )
-    ) {
-        self.permissionService = permissionService
-        self.fetchingService = fetchingService
-        self.favoritesStorageService = favoritesStorageService
-    }
+    let permissionService: ContactsPermissionServiceProtocol = ContactsPermissionService(
+        dependencies: .init(contactStore: CNContactStore()))
+    let fetchingService: ContactsFetchingServiceProtocol = ContactsFetchingService(dependencies: .init(contactStore: CNContactStore(), sortOrder: .userDefault))
+    let favoritesStorageService: FavoritesStorageServiceProtocol = FavoritesStorageService(dependencies: .init(userDefaults: .standard))
+    let contactImageLoadingService: ContactImageLoadingServiceProtocol = ContactImageLoadingService(dependencies: .init(contactStore: CNContactStore()))
 }

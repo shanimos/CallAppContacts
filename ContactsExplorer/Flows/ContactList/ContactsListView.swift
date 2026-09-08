@@ -6,9 +6,12 @@ struct ContactsListView: View {
     @StateObject private var store: ContactsStore
     @State private var path: [Contact] = []
     @State private var searchText = ""
+    
+    let contactDetailVMDependencies: ContactDetailViewModel.Dependencies
 
-    init(store: ContactsStore) {
+    init(store: ContactsStore, contactDetailVMDependencies: ContactDetailViewModel.Dependencies) {
         _store = StateObject(wrappedValue: store)
+        self.contactDetailVMDependencies = contactDetailVMDependencies
     }
 
     var body: some View {
@@ -16,7 +19,7 @@ struct ContactsListView: View {
             content
                 .navigationTitle("Contacts")
                 .navigationDestination(for: Contact.self) { contact in
-                    ContactDetailView(contact: contact, store: store)
+                    ContactDetailView(contact: contact, store: store, contactDetailVMDependencies: contactDetailVMDependencies)
                 }
         }
         .task {

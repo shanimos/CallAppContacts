@@ -25,7 +25,7 @@ struct ContactsExplorerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContactsListView(store: store)
+            ContactsListView(store: store, contactDetailVMDependencies: .init(permissionService: dependencies.permissionService, imageLoadingService: dependencies.contactImageLoadingService))
         }
     }
 }

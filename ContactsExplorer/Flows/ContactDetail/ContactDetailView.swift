@@ -1,20 +1,17 @@
-//
-//  ContactDetailView.swift
-//  ContactsExplorer
-//
-//  Created by Shai Balassiano on 17/08/2026.
-//
-
 import Contacts
 import SwiftUI
 import os
 
-private let logger = Logger(subsystem: "com.shaibalassiano.ContactsExplorer", category: "ContactDetailView")
-
 struct ContactDetailView: View {
     let contact: Contact
     @ObservedObject var store: ContactsStore
-    @State private var fullImageData: Data?
+    @State private var viewModel: ContactDetailViewModel
+
+    init(contact: Contact, store: ContactsStore, contactDetailVMDependencies: ContactDetailViewModel.Dependencies) {
+        self.contact = contact
+        self.store = store
+        _viewModel = State(initialValue: ContactDetailViewModel(contact: contact, dependencies: contactDetailVMDependencies))
+    }
 
     var body: some View {
         List {
@@ -28,14 +25,14 @@ struct ContactDetailView: View {
             }
         }
         .task {
-            await loadFullImage()
+            await viewModel.loadFullImage()
         }
     }
 
     private var header: some View {
         Section {
             VStack(spacing: 12) {
-                ContactAvatarView(contact: contact, imageData: fullImageData, size: 120)
+                ContactAvatarView(contact: contact, imageData: viewModel.fullImageData, size: 120)
                 Text(contact.displayName)
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
@@ -99,19 +96,6 @@ struct ContactDetailView: View {
 
     private var favoriteButton: some View {
         FavoriteButton(isFavorite: store.isFavorite(contact), action: { store.toggleFavorite(contact) })
-    }
-
-    // TODO: consider moving this into a manager
-    private func loadFullImage() async {
-        let status = CNContactStore.authorizationStatus(for: .contacts)
-        guard status == .authorized || status == .limited else { return }
-        do {
-            let keysToFetch = [CNContactImageDataKey as CNKeyDescriptor]
-            let cnContact = try CNContactStore().unifiedContact(withIdentifier: contact.id, keysToFetch: keysToFetch)
-            fullImageData = cnContact.imageData
-        } catch {
-            logger.error("Loading contact image failed: \(String(describing: error))")
-        }
     }
 }
 
