@@ -52,7 +52,7 @@ struct Contact: Identifiable, Hashable {
 }
 
 extension Contact {
-    init(_ cnContact: CNContact) {
+    nonisolated init(_ cnContact: CNContact) {
         id = cnContact.identifier
         givenName = cnContact.givenName
         familyName = cnContact.familyName
