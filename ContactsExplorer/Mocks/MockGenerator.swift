@@ -111,7 +111,7 @@ struct MockGenerator {
         state: ContactsStore.LoadState = .loaded,
         favoriteIDs: Set<String> = ["contact-emma"]
     ) -> ContactsStore {
-        ContactsStore(contacts: contacts, state: state, favoriteIDs: favoriteIDs)
+        ContactsStore(dependencies: .init(permissionService: MockContactsPermissionService(), fetchingService: MockContactsFetchingService(), favoritesStorageService: MockFavoritesStorageService()))
     }
 
     static func date(year: Int, month: Int, day: Int) -> Date? {

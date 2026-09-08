@@ -14,7 +14,13 @@ struct ContactsExplorerApp: App {
 
     init() {
         dependencies = AppDependencies()
-        store = ContactsStore()
+        store = ContactsStore(
+            dependencies: .init(
+                permissionService: dependencies.permissionService,
+                fetchingService: dependencies.fetchingService,
+                favoritesStorageService: dependencies.favoritesStorageService
+            )
+        )
     }
 
     var body: some Scene {

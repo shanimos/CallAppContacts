@@ -1,10 +1,3 @@
-//
-//  ContactsListView.swift
-//  ContactsExplorer
-//
-//  Created by Shai Balassiano on 17/08/2026.
-//
-
 import SwiftUI
 import UIKit
 
@@ -14,7 +7,7 @@ struct ContactsListView: View {
     @State private var path: [Contact] = []
     @State private var searchText = ""
 
-    init(store: ContactsStore = ContactsStore()) {
+    init(store: ContactsStore) {
         _store = StateObject(wrappedValue: store)
     }
 
