@@ -4,12 +4,12 @@ import os
 
 struct ContactDetailView: View {
     let contact: Contact
-    @ObservedObject var store: ContactsStore
+    @Binding var isFavorite: Bool
     @State private var viewModel: ContactDetailViewModel
 
-    init(contact: Contact, store: ContactsStore, contactDetailVMDependencies: ContactDetailViewModel.Dependencies) {
+    init(contact: Contact, isFavorite: Binding<Bool>, contactDetailVMDependencies: ContactDetailViewModel.Dependencies) {
         self.contact = contact
-        self.store = store
+        _isFavorite = isFavorite
         _viewModel = State(initialValue: ContactDetailViewModel(contact: contact, dependencies: contactDetailVMDependencies))
     }
 
@@ -95,7 +95,7 @@ struct ContactDetailView: View {
     }
 
     private var favoriteButton: some View {
-        FavoriteButton(isFavorite: store.isFavorite(contact), action: { store.toggleFavorite(contact) })
+        FavoriteButton(isFavorite: isFavorite, action: { isFavorite.toggle() })
     }
 }
 

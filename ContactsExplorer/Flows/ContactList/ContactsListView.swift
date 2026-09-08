@@ -2,14 +2,16 @@ import SwiftUI
 
 struct ContactsListView: View {
     @Environment(\.openURL) private var openURL
-    @StateObject private var store: ContactsStore
-    @State private var viewModel = ContactsListViewModel()
+    @State private var viewModel: ContactsListViewModel
     @State private var path: [Contact] = []
 
     let contactDetailVMDependencies: ContactDetailViewModel.Dependencies
 
-    init(store: ContactsStore, contactDetailVMDependencies: ContactDetailViewModel.Dependencies) {
-        _store = StateObject(wrappedValue: store)
+    init(
+        contactsListVMDependencies: ContactsListViewModel.Dependencies,
+        contactDetailVMDependencies: ContactDetailViewModel.Dependencies
+    ) {
+        _viewModel = State(initialValue: ContactsListViewModel(dependencies: contactsListVMDependencies))
         self.contactDetailVMDependencies = contactDetailVMDependencies
     }
 
@@ -18,18 +20,25 @@ struct ContactsListView: View {
             content
                 .navigationTitle("Contacts")
                 .navigationDestination(for: Contact.self) { contact in
-                    ContactDetailView(contact: contact, store: store, contactDetailVMDependencies: contactDetailVMDependencies)
+                    ContactDetailView(
+                        contact: contact,
+                        isFavorite: Binding(
+                            get: { viewModel.isFavorite(contact) },
+                            set: { _ in viewModel.toggleFavorite(contact) }
+                        ),
+                        contactDetailVMDependencies: contactDetailVMDependencies
+                    )
                 }
         }
         .task {
-            guard store.state == .idle else { return }
-            await store.load()
+            guard viewModel.state == .idle else { return }
+            await viewModel.load()
         }
     }
 
     @ViewBuilder
     private var content: some View {
-        switch store.state {
+        switch viewModel.state {
         case .idle, .loading:
             ProgressView("Loading Contacts…")
         case .permissionDenied:
@@ -52,25 +61,25 @@ struct ContactsListView: View {
             .background(Color(.systemGray6))
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .padding(.horizontal)
-            List(viewModel.filteredContacts(in: store.contacts)) { contact in
+            List(viewModel.filteredContacts) { contact in
                 Button {
                     path.append(contact)
                 } label: {
                     ContactRow(
                         contact: contact,
-                        isFavorite: store.isFavorite(contact),
-                        onToggleFavorite: { store.toggleFavorite(contact) }
+                        isFavorite: viewModel.isFavorite(contact),
+                        onToggleFavorite: { viewModel.toggleFavorite(contact) }
                     )
                 }
                 .buttonStyle(.plain)
             }
             .overlay {
-                if viewModel.hasNoSearchResults(in: store.contacts) {
+                if viewModel.hasNoSearchResults {
                     ContentUnavailableView.search(text: viewModel.searchText)
                 }
             }
             .refreshable {
-                await store.load()
+                await viewModel.load()
             }
         }
     }
@@ -96,7 +105,7 @@ struct ContactsListView: View {
             Text("Your contacts could not be loaded. Please try again.")
         } actions: {
             Button("Try Again") {
-                Task { await store.load() }
+                Task { await viewModel.load() }
             }
             .buttonStyle(.borderedProminent)
         }

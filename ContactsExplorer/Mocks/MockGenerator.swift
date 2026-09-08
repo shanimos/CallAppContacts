@@ -106,12 +106,21 @@ struct MockGenerator {
         ]
     }
 
-    static func store(
+    static func contactsListViewModel(
         contacts: [Contact] = MockGenerator.contacts(),
-        state: ContactsStore.LoadState = .loaded,
         favoriteIDs: Set<String> = ["contact-emma"]
-    ) -> ContactsStore {
-        ContactsStore(dependencies: .init(permissionService: MockContactsPermissionService(), fetchingService: MockContactsFetchingService(), favoritesStorageService: MockFavoritesStorageService()))
+    ) -> ContactsListViewModel {
+        let fetchingService = MockContactsFetchingService()
+        fetchingService.contactsToReturn = contacts
+        let favoritesStorageService = MockFavoritesStorageService()
+        favoritesStorageService.storedIDs = favoriteIDs
+        return ContactsListViewModel(
+            dependencies: .init(
+                permissionService: MockContactsPermissionService(),
+                fetchingService: fetchingService,
+                favoritesStorageService: favoritesStorageService
+            )
+        )
     }
 
     static func date(year: Int, month: Int, day: Int) -> Date? {
