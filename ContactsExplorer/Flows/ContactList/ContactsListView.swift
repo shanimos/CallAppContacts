@@ -46,7 +46,11 @@ struct ContactsListView: View {
         case .failed:
             failedView
         case .loaded:
-            contactsList
+            if viewModel.contacts.isEmpty {
+                noContactsView
+            } else {
+                contactsList
+            }
         }
     }
 
@@ -81,6 +85,14 @@ struct ContactsListView: View {
             .refreshable {
                 await viewModel.load()
             }
+        }
+    }
+
+    private var noContactsView: some View {
+        ContentUnavailableView {
+            Label("No Contacts", systemImage: "person.crop.circle.badge.questionmark")
+        } description: {
+            Text("Contacts you add will appear here.")
         }
     }
 
