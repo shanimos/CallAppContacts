@@ -324,6 +324,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BSA343KTP8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Contacts Explorer";
 				INFOPLIST_KEY_NSContactsUsageDescription = "Contacts Explorer shows your contacts so you can browse, search and favorite them.";
@@ -353,6 +354,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BSA343KTP8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Contacts Explorer";
 				INFOPLIST_KEY_NSContactsUsageDescription = "Contacts Explorer shows your contacts so you can browse, search and favorite them.";
