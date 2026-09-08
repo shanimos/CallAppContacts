@@ -115,19 +115,3 @@ struct ContactDetailView: View {
     }
 }
 
-struct FavoritesManager {
-    private enum Key: String {
-        case favoriteContactIDs
-    }
-
-    private init() {}
-
-    static func load() -> Set<String> {
-        let ids = UserDefaults.standard.stringArray(forKey: Key.favoriteContactIDs.rawValue) ?? []
-        return Set(ids)
-    }
-
-    static func save(_ ids: Set<String>) {
-        UserDefaults.standard.set(Array(ids), forKey: Key.favoriteContactIDs.rawValue)
-    }
-}
