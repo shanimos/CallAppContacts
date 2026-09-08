@@ -1,10 +1,3 @@
-//
-//  ContactsExplorerTests.swift
-//  ContactsExplorerTests
-//
-//  Created by Shai Balassiano on 20/08/2026.
-//
-
 import Foundation
 import Testing
 @testable import ContactsExplorer
