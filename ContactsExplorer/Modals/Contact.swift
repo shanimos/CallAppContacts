@@ -1,7 +1,7 @@
 import Contacts
 import Foundation
 
-struct Contact: Identifiable, Hashable {
+nonisolated struct Contact: Identifiable, Hashable {
     struct LabeledValue: Identifiable, Hashable {
         let label: String
         let value: String

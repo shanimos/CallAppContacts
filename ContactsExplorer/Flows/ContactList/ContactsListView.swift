@@ -1,12 +1,11 @@
 import SwiftUI
-import UIKit
 
 struct ContactsListView: View {
     @Environment(\.openURL) private var openURL
     @StateObject private var store: ContactsStore
+    @State private var viewModel = ContactsListViewModel()
     @State private var path: [Contact] = []
-    @State private var searchText = ""
-    
+
     let contactDetailVMDependencies: ContactDetailViewModel.Dependencies
 
     init(store: ContactsStore, contactDetailVMDependencies: ContactDetailViewModel.Dependencies) {
@@ -47,13 +46,13 @@ struct ContactsListView: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.secondary)
-                TextField("Name or phone number", text: $searchText)
+                TextField("Name or phone number", text: $viewModel.searchText)
             }
             .padding(8)
             .background(Color(.systemGray6))
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .padding(.horizontal)
-            List(filteredContacts) { contact in
+            List(viewModel.filteredContacts(in: store.contacts)) { contact in
                 Button {
                     path.append(contact)
                 } label: {
@@ -66,47 +65,14 @@ struct ContactsListView: View {
                 .buttonStyle(.plain)
             }
             .overlay {
-                if hasNoSearchResults {
-                    ContentUnavailableView.search(text: searchText)
+                if viewModel.hasNoSearchResults(in: store.contacts) {
+                    ContentUnavailableView.search(text: viewModel.searchText)
                 }
             }
             .refreshable {
                 await store.load()
             }
         }
-    }
-
-    // MARK: - Search Logic
-
-    private var filteredContacts: [Contact] {
-        let query = trimmedSearchText
-        guard !query.isEmpty else { return store.contacts }
-        return store.contacts.filter { matches(contact: $0, query: query) }
-    }
-
-    private var hasNoSearchResults: Bool {
-        !trimmedSearchText.isEmpty && filteredContacts.isEmpty
-    }
-
-    private var trimmedSearchText: String {
-        searchText.trimmingCharacters(in: .whitespaces)
-    }
-
-    private func matches(contact: Contact, query: String) -> Bool {
-        print("DEBUG: checking if '\(contact.displayName)' matches query '\(query)'")
-        if contact.displayName.localizedCaseInsensitiveContains(query) {
-            return true
-        }
-        guard isPhoneNumber(query: query) else {
-            return false
-        }
-        let queryDigits = query.filter(\.isWholeNumber)
-        return contact.phoneNumbers.contains { $0.value.filter(\.isWholeNumber).contains(queryDigits) }
-    }
-
-    private func isPhoneNumber(query: String) -> Bool {
-        query.contains(where: \.isWholeNumber) &&
-            query.allSatisfy { $0.isWholeNumber || "+-(). ".contains($0) }
     }
 
     private var permissionDeniedView: some View {
