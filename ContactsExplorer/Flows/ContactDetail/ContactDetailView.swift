@@ -1,6 +1,4 @@
-import Contacts
 import SwiftUI
-import os
 
 struct ContactDetailView: View {
     let contact: Contact

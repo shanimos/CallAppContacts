@@ -21,11 +21,13 @@ struct ContactsExplorerApp: App {
                 contactsListVMDependencies: .init(
                     permissionService: dependencies.permissionService,
                     fetchingService: dependencies.fetchingService,
-                    favoritesStorageService: dependencies.favoritesStorageService
+                    favoritesStorageService: dependencies.favoritesStorageService,
+                    logger: AppLogger.make(for: ContactsListViewModel.self)
                 ),
                 contactDetailVMDependencies: .init(
                     permissionService: dependencies.permissionService,
-                    imageLoadingService: dependencies.contactImageLoadingService
+                    imageLoadingService: dependencies.contactImageLoadingService,
+                    logger: AppLogger.make(for: ContactDetailViewModel.self)
                 )
             )
         }

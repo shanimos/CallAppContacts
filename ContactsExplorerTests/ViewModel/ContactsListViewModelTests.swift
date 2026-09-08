@@ -29,7 +29,8 @@ struct ContactsListViewModelTests {
             dependencies: .init(
                 permissionService: permissionService,
                 fetchingService: fetchingService,
-                favoritesStorageService: favoritesStorageService
+                favoritesStorageService: favoritesStorageService,
+                logger: AppLogger.make(for: ContactsListViewModel.self)
             )
         )
         return (viewModel, fetchingService, favoritesStorageService, permissionService)

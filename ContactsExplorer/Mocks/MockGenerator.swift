@@ -118,7 +118,8 @@ struct MockGenerator {
             dependencies: .init(
                 permissionService: MockContactsPermissionService(),
                 fetchingService: fetchingService,
-                favoritesStorageService: favoritesStorageService
+                favoritesStorageService: favoritesStorageService,
+                logger: AppLogger.make(for: ContactsListViewModel.self)
             )
         )
     }

@@ -13,6 +13,7 @@ final class ContactsListViewModel {
         let permissionService: ContactsPermissionServiceProtocol
         let fetchingService: ContactsFetchingServiceProtocol
         let favoritesStorageService: FavoritesStorageServiceProtocol
+        let logger: Logger
     }
 
     var searchText = ""
@@ -21,7 +22,6 @@ final class ContactsListViewModel {
     private(set) var favoriteIDs: Set<String>
 
     private let dependencies: Dependencies
-    private let logger = Logger(subsystem: "com.shaibalassiano.ContactsExplorer", category: "ContactsListViewModel")
 
     init(dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -38,7 +38,7 @@ final class ContactsListViewModel {
             contacts = try await dependencies.fetchingService.fetchContacts()
             state = .loaded
         } catch {
-            logger.error("Loading contacts failed: \(String(describing: error))")
+            dependencies.logger.error("Loading contacts failed: \(String(describing: error))")
             if contacts.isEmpty { state = .failed }
         }
     }

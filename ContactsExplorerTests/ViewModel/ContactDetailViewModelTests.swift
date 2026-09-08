@@ -20,7 +20,11 @@ struct ContactDetailViewModelTests {
 
         let viewModel = ContactDetailViewModel(
             contact: contact,
-            dependencies: .init(permissionService: permissionService, imageLoadingService: imageLoadingService)
+            dependencies: .init(
+                permissionService: permissionService,
+                imageLoadingService: imageLoadingService,
+                logger: AppLogger.make(for: ContactDetailViewModel.self)
+            )
         )
         return (viewModel, imageLoadingService)
     }
