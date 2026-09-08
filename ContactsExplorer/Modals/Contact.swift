@@ -1,18 +1,12 @@
-//
-//  Contact.swift
-//  ContactsExplorer
-//
-//  Created by Shai Balassiano on 17/08/2026.
-//
-
 import Contacts
 import Foundation
 
-nonisolated struct Contact: Identifiable, Hashable {
+struct Contact: Identifiable, Hashable {
     struct LabeledValue: Identifiable, Hashable {
-        let id = UUID()
         let label: String
         let value: String
+        
+        var id: String { "\(label)|\(value)" }
     }
 
     let id: String
@@ -24,12 +18,15 @@ nonisolated struct Contact: Identifiable, Hashable {
     let emails: [LabeledValue]
     let birthday: Date?
     let thumbnailData: Data?
+    
+    private var rawName: String {
+        "\(givenName) \(familyName)".trimmingCharacters(in: .whitespaces)
+    }
 
     var displayName: String {
-        // let name = "\(givenName) \(familyName)".trimmingCharacters(in: .whitespaces)
-        // if !name.isEmpty {
-        //     return name
-        // }
+        if !rawName.isEmpty {
+            return rawName
+        }
         if !fullName.isEmpty {
             return fullName
         }
@@ -44,6 +41,9 @@ nonisolated struct Contact: Identifiable, Hashable {
         if !nameInitials.isEmpty {
             return String(nameInitials).uppercased()
         }
+        if let fullNameInitial = fullName.first {
+            return String(fullNameInitial).uppercased()
+        }
         if let organizationInitial = organizationName.first {
             return String(organizationInitial).uppercased()
         }
@@ -51,7 +51,7 @@ nonisolated struct Contact: Identifiable, Hashable {
     }
 }
 
-nonisolated extension Contact {
+extension Contact {
     init(_ cnContact: CNContact) {
         id = cnContact.identifier
         givenName = cnContact.givenName
