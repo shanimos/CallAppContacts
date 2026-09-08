@@ -9,9 +9,17 @@ import SwiftUI
 
 @main
 struct ContactsExplorerApp: App {
+    private let dependencies: AppDependencies
+    private let store: ContactsStore
+
+    init() {
+        dependencies = AppDependencies()
+        store = ContactsStore()
+    }
+
     var body: some Scene {
         WindowGroup {
-            ContactsListView()
+            ContactsListView(store: store)
         }
     }
 }
