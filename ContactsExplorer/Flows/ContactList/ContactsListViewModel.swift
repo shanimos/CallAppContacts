@@ -43,6 +43,11 @@ final class ContactsListViewModel {
         }
     }
 
+    func reloadIfNeeded() async {
+        guard state != .idle, state != .loading else { return }
+        await load()
+    }
+
     func toggleFavorite(_ contact: Contact) {
         if favoriteIDs.contains(contact.id) {
             favoriteIDs.remove(contact.id)

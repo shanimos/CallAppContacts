@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContactsListView: View {
     @Environment(\.openURL) private var openURL
+    @Environment(\.scenePhase) private var scenePhase
     @State private var viewModel: ContactsListViewModel
     @State private var path: [Contact] = []
 
@@ -33,6 +34,10 @@ struct ContactsListView: View {
         .task {
             guard viewModel.state == .idle else { return }
             await viewModel.load()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            guard newPhase == .active else { return }
+            Task { await viewModel.reloadIfNeeded() }
         }
     }
 

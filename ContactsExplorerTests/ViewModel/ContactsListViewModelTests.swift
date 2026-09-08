@@ -75,6 +75,53 @@ struct ContactsListViewModelTests {
         #expect(setup.viewModel.contacts.isEmpty)
     }
 
+    @Test("reloadIfNeeded does nothing while idle")
+    func reloadIfNeededSkipsWhenIdle() async {
+        let setup = makeViewModel()
+
+        await setup.viewModel.reloadIfNeeded()
+
+        #expect(setup.viewModel.state == .idle)
+        #expect(setup.fetchingService.fetchCallCount == 0)
+    }
+
+    @Test("reloadIfNeeded refetches after a successful load, e.g. returning to the foreground")
+    func reloadIfNeededRefetchesWhenLoaded() async {
+        let setup = makeViewModel()
+        await setup.viewModel.load()
+        #expect(setup.fetchingService.fetchCallCount == 1)
+
+        await setup.viewModel.reloadIfNeeded()
+
+        #expect(setup.viewModel.state == .loaded)
+        #expect(setup.fetchingService.fetchCallCount == 2)
+    }
+
+    @Test("reloadIfNeeded retries permission after being denied")
+    func reloadIfNeededRetriesAfterPermissionDenied() async {
+        let setup = makeViewModel(accessGranted: false)
+        await setup.viewModel.load()
+        #expect(setup.viewModel.state == .permissionDenied)
+
+        setup.permissionService.requestAccessResult = .success(true)
+        await setup.viewModel.reloadIfNeeded()
+
+        #expect(setup.viewModel.state == .loaded)
+    }
+
+    @Test("reloadIfNeeded retries after a previous failure")
+    func reloadIfNeededRetriesAfterFailure() async {
+        struct FetchError: Error {}
+        let setup = makeViewModel(fetchError: FetchError())
+        await setup.viewModel.load()
+        #expect(setup.viewModel.state == .failed)
+
+        setup.fetchingService.errorToThrow = nil
+        await setup.viewModel.reloadIfNeeded()
+
+        #expect(setup.viewModel.state == .loaded)
+    }
+
     @Test("A failed refresh keeps the previously loaded contacts and state")
     func refreshFailureKeepsCache() async {
         let contacts = MockGenerator.contacts()
