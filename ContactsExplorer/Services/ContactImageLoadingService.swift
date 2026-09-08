@@ -7,7 +7,7 @@ protocol ContactImageLoadingServiceProtocol {
 
 final class ContactImageLoadingService: ContactImageLoadingServiceProtocol {
     struct Dependencies {
-        let contactStore: CNContactStore
+        let contactStore: ContactStoreProtocol
     }
 
     private let dependencies: Dependencies

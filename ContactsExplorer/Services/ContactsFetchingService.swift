@@ -6,7 +6,7 @@ protocol ContactsFetchingServiceProtocol {
 
 final class ContactsFetchingService: ContactsFetchingServiceProtocol {
     struct Dependencies: Sendable {
-        let contactStore: CNContactStore
+        let contactStore: ContactStoreProtocol
         let sortOrder: CNContactSortOrder
     }
 

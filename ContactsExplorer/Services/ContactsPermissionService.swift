@@ -7,7 +7,7 @@ protocol ContactsPermissionServiceProtocol {
 
 final class ContactsPermissionService: ContactsPermissionServiceProtocol {
     struct Dependencies {
-        let contactStore: CNContactStore
+        let contactStore: ContactStoreProtocol
     }
 
     private let dependencies: Dependencies
@@ -17,7 +17,7 @@ final class ContactsPermissionService: ContactsPermissionServiceProtocol {
     }
 
     func authorizationStatus() -> CNAuthorizationStatus {
-        CNContactStore.authorizationStatus(for: .contacts)
+        dependencies.contactStore.authorizationStatus(for: .contacts)
     }
 
     func requestAccessIfNeeded() async throws -> Bool {
