@@ -33,7 +33,7 @@ final class ContactsStore: ObservableObject {
                 state = .permissionDenied
                 return
             }
-            contacts = try dependencies.fetchingService.fetchContacts()
+            contacts = try await dependencies.fetchingService.fetchContacts()
             state = .loaded
         } catch {
             logger.error("Loading contacts failed: \(String(describing: error))")

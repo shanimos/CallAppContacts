@@ -1,11 +1,11 @@
-import Contacts
+@preconcurrency import Contacts
 
 protocol ContactsFetchingServiceProtocol {
-    func fetchContacts() throws -> [Contact]
+    func fetchContacts() async throws -> [Contact]
 }
 
 final class ContactsFetchingService: ContactsFetchingServiceProtocol {
-    struct Dependencies {
+    struct Dependencies: Sendable {
         let contactStore: CNContactStore
         let sortOrder: CNContactSortOrder
     }
@@ -16,24 +16,26 @@ final class ContactsFetchingService: ContactsFetchingServiceProtocol {
         self.dependencies = dependencies
     }
 
-    func fetchContacts() throws -> [Contact] {
-        let keysToFetch: [CNKeyDescriptor] = [
-            CNContactFormatter.descriptorForRequiredKeys(for: .fullName),
-            CNContactGivenNameKey as CNKeyDescriptor,
-            CNContactFamilyNameKey as CNKeyDescriptor,
-            CNContactOrganizationNameKey as CNKeyDescriptor,
-            CNContactPhoneNumbersKey as CNKeyDescriptor,
-            CNContactEmailAddressesKey as CNKeyDescriptor,
-            CNContactBirthdayKey as CNKeyDescriptor,
-            CNContactThumbnailImageDataKey as CNKeyDescriptor
-        ]
-        let request = CNContactFetchRequest(keysToFetch: keysToFetch)
-        request.sortOrder = dependencies.sortOrder
+    func fetchContacts() async throws -> [Contact] {
+        try await Task.detached(priority: .userInitiated) { [dependencies] in
+            let keysToFetch: [CNKeyDescriptor] = [
+                CNContactFormatter.descriptorForRequiredKeys(for: .fullName),
+                CNContactGivenNameKey as CNKeyDescriptor,
+                CNContactFamilyNameKey as CNKeyDescriptor,
+                CNContactOrganizationNameKey as CNKeyDescriptor,
+                CNContactPhoneNumbersKey as CNKeyDescriptor,
+                CNContactEmailAddressesKey as CNKeyDescriptor,
+                CNContactBirthdayKey as CNKeyDescriptor,
+                CNContactThumbnailImageDataKey as CNKeyDescriptor
+            ]
+            let request = CNContactFetchRequest(keysToFetch: keysToFetch)
+            request.sortOrder = dependencies.sortOrder
 
-        var fetched: [Contact] = []
-        try dependencies.contactStore.enumerateContacts(with: request) { cnContact, _ in
-            fetched.append(Contact(cnContact))
-        }
-        return fetched
+            var fetched: [Contact] = []
+            try await dependencies.contactStore.enumerateContacts(with: request) { cnContact, _ in
+                fetched.append(Contact(cnContact))
+            }
+            return fetched
+        }.value
     }
 }

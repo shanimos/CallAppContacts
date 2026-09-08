@@ -3,7 +3,7 @@ final class MockContactsFetchingService: ContactsFetchingServiceProtocol {
     var errorToThrow: Error?
     private(set) var fetchCallCount = 0
 
-    func fetchContacts() throws -> [Contact] {
+    func fetchContacts() async throws -> [Contact] {
         fetchCallCount += 1
         if let errorToThrow { throw errorToThrow }
         return contactsToReturn
