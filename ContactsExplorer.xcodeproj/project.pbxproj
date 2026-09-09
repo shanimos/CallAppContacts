@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B91B1E6E305130F400BC0EFF /* NOTES.md in Resources */ = {isa = PBXBuildFile; fileRef = B91B1E6D305130EE00BC0EFF /* NOTES.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		A00000000000000000000019 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -19,6 +23,7 @@
 /* Begin PBXFileReference section */
 		A00000000000000000000003 /* ContactsExplorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ContactsExplorer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A00000000000000000000011 /* ContactsExplorerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ContactsExplorerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B91B1E6D305130EE00BC0EFF /* NOTES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = NOTES.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -55,6 +60,7 @@
 		A00000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				B91B1E6D305130EE00BC0EFF /* NOTES.md */,
 				A00000000000000000000004 /* ContactsExplorer */,
 				A00000000000000000000010 /* ContactsExplorerTests */,
 				A00000000000000000000002 /* Products */,
@@ -161,6 +167,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B91B1E6E305130F400BC0EFF /* NOTES.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
